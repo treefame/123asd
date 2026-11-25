@@ -1,38 +1,22 @@
-# Sonora — music web app
+# Sonora
 
-A lightweight, responsive music app built with plain HTML, CSS and JavaScript. No Electron.
+Sonora is a Windows desktop music community built with Tauri 2 + Vite + JavaScript (not Electron).
 
-## Features
-- Search tracks on SoundCloud (requires your own SoundCloud Client ID).
-- Play tracks using the official SoundCloud embedded player.
-- Create and manage playlists; add tracks from search results.
-- Save liked tracks and edit a local profile.
-- Responsive dark interface.
+## Features in this MVP
+- Liquid Glass dark interface, Manrope typography, personal wallpaper and accent.
+- Supabase email/password accounts and profiles (nickname, unique username, avatar, banner, bio).
+- Community music wave with user tracks, likes, reposts and comments.
+- Audio uploads and SoundCloud search/streaming.
+- Tauri Windows NSIS EXE and MSI packaging.
 
-## Run locally
-Because browser requests and embedded playback work best from an HTTP origin, serve this folder with any static server. For example:
+## Setup
+1. Install Node.js 22 and Rust stable. On Windows install Microsoft C++ Build Tools and WebView2.
+2. Run `npm install`.
+3. Create a Supabase project and run `supabase/schema.sql` in its SQL Editor.
+4. Copy project URL and anon/public key into `config.js`. Add SoundCloud Client ID.
+5. Run `npm run tauri:dev` for desktop development or `npm run tauri:build` to build installers.
 
-```bash
-python -m http.server 8000
-```
+The Windows EXE installer appears in `src-tauri/target/release/bundle/nsis/`; MSI in `src-tauri/target/release/bundle/msi/`. GitHub Actions can build it after a manual workflow dispatch or push of a version tag (v*); download the Sonora-Windows artifact from the run.
 
-Then open http://localhost:8000.
-
-## Connect SoundCloud
-1. Register/sign in at https://developers.soundcloud.com/ and create an application if API access is available for your account.
-2. Copy the application's **Client ID**.
-3. Open `config.js` and set `soundcloudClientId` to that value.
-4. Reload the app.
-
-```js
-window.SONORA_CONFIG = {
-  soundcloudClientId: "YOUR_SOUNDCLOUD_CLIENT_ID"
-};
-```
-
-Do not put a Client Secret in frontend code. Anything in `config.js` is visible to visitors. If SoundCloud does not issue a Client ID to your application, use a small backend service to keep credentials private and proxy supported API requests. SoundCloud API availability and authentication requirements can change; check the current developer documentation.
-
-## Notes
-- Profile, playlists and liked tracks are stored in this browser's localStorage. They are not synced between devices.
-- Audio is streamed from SoundCloud; this app does not download or re-host music.
-- The repository starts as a static front-end, so no database or user authentication server is included yet.
+## Backend setup
+Supabase is required for real multi-user accounts and cross-device social features. Only the anon/public key belongs in the client. Never expose a Supabase service-role key or SoundCloud client secret. Configure email confirmation, quotas, moderation and storage limits before public release. The included media bucket is public for this MVP; do not use it for private files.
