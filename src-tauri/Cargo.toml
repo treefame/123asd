@@ -1,0 +1,13 @@
+[package]
+name="sonora"
+version="0.2.0"
+description="Sonora music community"
+authors=["Sonora"]
+edition="2021"
+[lib]
+name="sonora_lib"
+crate-type=["staticlib","cdylib","rlib"]
+[build-dependencies]
+tauri-build={version="2",features=[]}
+[dependencies]
+tauri={version="2",features=[]}
