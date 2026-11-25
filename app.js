@@ -56,8 +56,8 @@
       const response=await fetch(url);
       if(!response.ok) throw new Error("SoundCloud API: "+response.status);
       const data=await response.json(); const tracks=data.collection||[];
-      $("results-title").textContent=query?'Результаты поиска: "'+query+'"':"Популярные треки";
-      renderResults(tracks);
+      if(query){ $("results-title").textContent='Результаты поиска: "'+query+'"'; renderResults(tracks); }
+      else { $("featured-tracks").innerHTML=renderTrackCards(tracks); queue=tracks; $("results-title").textContent="Популярные треки"; renderResults(tracks); }
     } catch(error) {
       $("search-results").innerHTML='<div class="empty-state">Не удалось получить треки из SoundCloud. Проверь Client ID и подключение к интернету.<br><span class="muted">'+escapeHTML(error.message)+'</span></div>';
     }
