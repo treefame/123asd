@@ -12,3 +12,25 @@ create policy "reposts read" on public.reposts for select using(true);create pol
 create policy "comments read" on public.comments for select using(true);create policy "comments insert own" on public.comments for insert with check(auth.uid()=user_id);create policy "comments delete own" on public.comments for delete using(auth.uid()=user_id);
 insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types) values('sonora-media','sonora-media',true,52428800,array['audio/mpeg','audio/mp4','audio/aac','audio/wav','audio/ogg','audio/flac','image/jpeg','image/png','image/webp']) on conflict(id) do nothing;
 create policy "public media read" on storage.objects for select using(bucket_id='sonora-media');create policy "upload own media" on storage.objects for insert to authenticated with check(bucket_id='sonora-media' and (storage.foldername(name))[1]=auth.uid()::text);create policy "delete own media" on storage.objects for delete to authenticated using(bucket_id='sonora-media' and (storage.foldername(name))[1]=auth.uid()::text);
+-- Create a profile as soon as an auth user is created (also works with email confirmation enabled).
+create or replace function public.handle_new_sonora_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  insert into public.profiles(id, nickname, username)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'nickname', 'Listener'),
+    coalesce(new.raw_user_meta_data->>'username', 'user_' || substr(new.id::text, 1, 8))
+  )
+  on conflict (id) do nothing;
+  return new;
+end;
+$$;
+drop trigger if exists on_sonora_user_created on auth.users;
+create trigger on_sonora_user_created
+after insert on auth.users
+for each row execute procedure public.handle_new_sonora_user();
