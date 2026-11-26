@@ -19,22 +19,22 @@ jobs:
         run: |
           Add-Type -AssemblyName System.Drawing
           New-Item -ItemType Directory -Force -Path "src-tauri/icons" | Out-Null
-          $bmp = New-Object System.Drawing.Bitmap 256, 256
+          $bmp = [System.Drawing.Bitmap]::new(256, 256)
           $g = [System.Drawing.Graphics]::FromImage($bmp)
           $g.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
           $g.Clear([System.Drawing.Color]::FromArgb(13, 16, 23))
-          $green = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(124, 92, 255))
-          $white = New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(245, 247, 255), 17)
+          $green = [System.Drawing.SolidBrush]::new([System.Drawing.Color]::FromArgb(124, 92, 255))
+          $white = [System.Drawing.Pen]::new([System.Drawing.Color]::FromArgb(245, 247, 255), 17)
           $white.StartCap = [System.Drawing.Drawing2D.LineCap]::Round
           $white.EndCap = [System.Drawing.Drawing2D.LineCap]::Round
           $points = @(
-            (New-Object System.Drawing.Point 38, 133),
-            (New-Object System.Drawing.Point 75, 133),
-            (New-Object System.Drawing.Point 98, 88),
-            (New-Object System.Drawing.Point 128, 174),
-            (New-Object System.Drawing.Point 158, 105),
-            (New-Object System.Drawing.Point 181, 133),
-            (New-Object System.Drawing.Point 218, 133)
+            [System.Drawing.Point]::new(38, 133),
+            [System.Drawing.Point]::new(75, 133),
+            [System.Drawing.Point]::new(98, 88),
+            [System.Drawing.Point]::new(128, 174),
+            [System.Drawing.Point]::new(158, 105),
+            [System.Drawing.Point]::new(181, 133),
+            [System.Drawing.Point]::new(218, 133)
           )
           $g.FillEllipse($green, 12, 12, 232, 232)
           $g.DrawLines($white, $points)
