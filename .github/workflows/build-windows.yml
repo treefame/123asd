@@ -37,7 +37,9 @@ jobs:
             [System.Drawing.Point]::new(218, 133)
           )
           $g.FillEllipse($green, 12, 12, 232, 232)
-          $g.DrawLines($white, $points)
+          for ($i = 0; $i -lt ($points.Count - 1); $i++) {
+            $g.DrawLine($white, $points[$i], $points[$i + 1])
+          }
           $bmp.Save("src-tauri/icons/icon.png", [System.Drawing.Imaging.ImageFormat]::Png)
           $hIcon = $bmp.GetHicon()
           $icon = [System.Drawing.Icon]::FromHandle($hIcon)
